@@ -1,0 +1,7 @@
+/.venv
+/__pycache__
+/pyproject.toml
+/poetry.lock
+/backend/token.json
+/backend/credential.json
+/.env
