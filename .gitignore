@@ -4,4 +4,6 @@
 /poetry.lock
 /backend/token.json
 /backend/credentials.json
+/backend/client_secrets.json
+/backend/creds.txt
 /.env

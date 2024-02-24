@@ -72,7 +72,7 @@ def upload_file(file_path):
 
     return file.get("id")
 
-def download_files(real_file_id):
+def download_files(real_file_id, file_name):
     """Get files from google drive"""
     creds = authenticate()
 
@@ -88,10 +88,14 @@ def download_files(real_file_id):
         while done is False:
             status, done = downloader.next_chunk()
             print(f"Download {int(status.progress() * 100)}.")
+        #with open(file_name, "wb") as f:
+        #    f.write(file.getvalue())
+        #return file_name
 
     except HttpError as error:
         print(f"An error occurred: {error}")
         file = None
+        #return None
 
     return file
 
@@ -138,7 +142,7 @@ def search_files2():
         service = build("drive", "v3", credentials=creds)
         results = (
             service.files()
-            .list(q = "'" + FOLDER_ID[0] + "' in parents", pageSize=10, fields="nextPageToken, files(id, name)")
+            .list(q = "'" + FOLDER_ID[0] + "' in parents", pageSize=10, fields="nextPageToken, files(id, name, mimeType, fileExtension)")
             .execute()
         )
         items = results.get("files", [])
@@ -151,17 +155,56 @@ def search_files2():
 
     return files
 
+def export_pdf(real_file_id):
+    """Download a Document file in PDF format.
+    Args:
+    real_file_id : file ID of any workspace document format file
+    Returns : IO object with location
+    """
+    creds = authenticate()
+    
+    try:
+        # create drive api client
+        service = build("drive", "v3", credentials=creds)
+
+        file_id = real_file_id
+
+        # pylint: disable=maybe-no-member
+        request = service.files().export_media(
+            fileId=file_id, mimeType="application/pdf"
+        )
+        file = io.BytesIO()
+        downloader = MediaIoBaseDownload(file, request)
+        done = False
+        while done is False:
+            status, done = downloader.next_chunk()
+            print(f"Download {int(status.progress() * 100)}.")
+
+    except HttpError as error:
+        print(f"An error occurred: {error}")
+        file = None
+
+    return file.getvalue()
+
 def main():
     '''main function'''
     #creds = authenticate()
     #uploaded_file = upload_file(FILE_PATH)
+    
     files = search_files2()
+    
     if not files:
         print("No files found.")
     else:
         print("Files:")
         for item in files:
-            print(f"{item['name']} : {item['id']}")
+            print(item)
+            #print(f"{item['name']}.{item['mymeType']} : {item['id']}")
+    
+    #print(files[0]['id'])
+    file = download_files(files[2]['id'], files[2]['name'])
+    print(file)
+    #print(file.getvalue().decode())
 
 if __name__ == "__main__":
     main()
