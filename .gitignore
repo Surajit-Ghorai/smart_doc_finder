@@ -7,3 +7,9 @@
 /backend/client_secrets.json
 /backend/creds.txt
 /.env
+/cache_dir
+/persist_dir
+/trial
+/backend/__pycache__
+/frontend/__pycache__
+/local_pipeline_storage
