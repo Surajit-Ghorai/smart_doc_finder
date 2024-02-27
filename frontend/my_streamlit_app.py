@@ -1,24 +1,37 @@
 '''my streamlit app'''
-import streamlit as st
+import sys
+sys.path.append(r'C:\Users\promact\new_project_task\Intelligent_document_finder\trial')
 
-with st.sidebar:
-    menu = st.text_input("My Menu")
+import streamlit as st
+import basic
+
+def find_answer():
+    return "backend not available!!"
 
 st.title("Intelligent Document Finder")
 
-uploaded_file = st.file_uploader("Upload any document")
-
-question = st.text_input(
-    "Ask something about the article",
-    placeholder="Can you give me a short summary?",
-    disabled=not uploaded_file,
+user_question = st.text_input(
+    "Enter your query",
+    placeholder="Enter your question here...",
 )
 
-if uploaded_file and not question:
+#user_question = st.chat_input("Enter your query")
+
+if not user_question:
     st.info("Please add your question to continue.")
 
-if uploaded_file and question:
-    article = uploaded_file.read().decode()
+bot_response = []
+if user_question:
+    bot_response = basic.get_answer(user_question)
 
-    st.write("### Answer")
-    st.write("here is an answer")
+with st.container(border=True):
+    if bot_response == None or bot_response == []:
+        st.write("## Answer")
+        st.write("your answer will be displayed here!!")
+    else:
+        st.write("## Answer")
+        st.write(bot_response[0])
+        st.write("### Source")
+        st.write(f"File name: {bot_response[1]}")
+        st.write(f"Page number: {bot_response[2]}")
+        #st.write(f"file location: {answer.source_nodes[0].metadata['file id']}")
