@@ -10,3 +10,5 @@
 /backend/__pycache__/
 /frontend/__pycache__/
 /__pycache__/
+/backend/docs2.py
+/backend/main2.py
