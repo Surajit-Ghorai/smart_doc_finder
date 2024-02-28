@@ -26,7 +26,7 @@ def get_answer(question):
     # Q&A
     response = query_engine.query(question)
     answer = response.response
-    file_name = response.source_nodes[0].metadata["file_name"]
+    file_name = response.source_nodes[0].metadata["file name"]
     page_number = response.source_nodes[0].metadata["page_label"]
     my_response = [answer, file_name, page_number]
     return my_response
