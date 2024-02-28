@@ -1,9 +1,9 @@
-"""main app to run the application connecting both frontend and backend"""
+"""entrypoint to the application connecting both frontend and backend"""
 from frontend import my_streamlit_app
-from backend import main
 
 def app():
-    print("running...")
+    """this method runs the application"""
+    my_streamlit_app.run_app()
 
 if __name__ == "__main__":
     app()
