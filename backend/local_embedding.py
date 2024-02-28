@@ -6,7 +6,7 @@ from llama_index.embeddings.instructor import InstructorEmbedding
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.core import Settings
 
-from constants import CACHE_DIR
+from paths import CACHE_DIR
 
 
 # loading embed model

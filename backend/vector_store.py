@@ -4,7 +4,7 @@ vector datastore
 import chromadb
 from llama_index.vector_stores.chroma import ChromaVectorStore
 
-from constants import PERSIST_DIR
+from paths import PERSIST_DIR
 
 
 # vector database

@@ -10,7 +10,7 @@ from llama_index.core.storage.docstore import SimpleDocumentStore
 
 from local_embedding import load_local_embedding
 from vector_store import get_vector_database
-from constants import PIPELINE_DIR
+from paths import PIPELINE_DIR
 
 
 # create ingestion pipeline
