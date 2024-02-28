@@ -29,6 +29,10 @@ def get_answer(question):
     file_name = response.source_nodes[0].metadata["file_name"]
     page_number = response.source_nodes[0].metadata["page_label"]
     my_response = [answer, file_name, page_number]
-    return my_response
+    return response
 
-# print(get_answer('title of the story'))
+response = get_answer('title of the story')
+
+print(response.response)
+print(response.metadata)
+print(response.source_nodes)

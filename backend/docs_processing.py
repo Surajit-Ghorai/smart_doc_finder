@@ -1,6 +1,9 @@
 """
 ingestion pipeline: processing the input data
 """
+import os
+import openai
+from dotenv import load_dotenv
 from llama_index.core import Document
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core.extractors import TitleExtractor
@@ -12,6 +15,9 @@ from local_embedding import load_local_embedding
 from vector_store import get_vector_database
 from paths import PIPELINE_DIR
 
+# loading api key
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # create ingestion pipeline
 def build_pipeline():
