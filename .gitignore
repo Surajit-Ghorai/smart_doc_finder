@@ -6,7 +6,7 @@
 /cache_dir
 /persist_dir
 /local_pipeline_storage
-/backend/credentials.json
+/credentials.json
 /backend/__pycache__/
 /frontend/__pycache__/
 /__pycache__/
