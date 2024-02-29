@@ -35,7 +35,7 @@ def run_app():
     bot_response = []
     # getting the answer from backend parts
     if user_question:
-        bot_response = main.get_answer(user_question)
+        bot_response, metadata = main.get_answer(user_question)
 
     with st.container(border=True):
         if bot_response == None or bot_response == []:
@@ -43,8 +43,13 @@ def run_app():
             st.write("your answer will be displayed here!!")
         else:
             st.write("## Answer")
-            st.write(bot_response[0])
-            st.write("### Source")
-            st.write(f"File name: {bot_response[1]}")
-            st.write(f"Page number: {bot_response[2]}")
-            # st.write(f"file location: {answer.source_nodes[0].metadata['file id']}")
+            st.write(bot_response)
+            st.write("### Additional information")
+            st.write(f"File name: {metadata['file name']}")
+            if "page_label" in metadata:
+                st.write(f"Page number: {metadata['page_label']}")
+            else:
+                st.write(f"Page number: 1")
+            st.write(f"Paragraph number: {metadata['paragraph_number']}")
+            st.write(f"Tile: {metadata['title']}")
+            st.write(f"Author of the file: {metadata['author']}")
