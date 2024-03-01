@@ -3,8 +3,8 @@ ingestion pipeline: processing the input data
 """
 
 import os
-import openai
 import re
+import openai
 from dotenv import load_dotenv
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core.schema import TextNode
@@ -12,7 +12,6 @@ from llama_index.core import VectorStoreIndex
 from local_llm_model import load_local_llm
 
 from vector_store import get_vector_database
-from paths import PIPELINE_DIR, CACHE_DIR, PERSIST_DIR
 
 # loading api key
 load_dotenv()
@@ -21,7 +20,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # my title extractor
 def extract_title(text):
-
+    """return title for the input text"""
     llm = load_local_llm()
     title = ""
     try:
@@ -43,7 +42,7 @@ text_parser = SentenceSplitter(
 
 # split manually
 def split_paragraphs_manually(texts):
-    # paragraphs = re.split(r"\n\s*(\r?\n|$)", texts)
+    """splits text into paragraphs"""
     paragraph_regex = r"(?<!\n)\s*(\r?\n){2,}\s*(?!\n)"
     paragraphs = re.split(paragraph_regex, texts)
     paragraphs = [paragraph for paragraph in paragraphs if paragraph.strip()]
@@ -52,6 +51,7 @@ def split_paragraphs_manually(texts):
 
 # splitting into chunks
 def split_chunks(doc):
+    """splits documents into smaller chunks"""
     metadata = doc.metadata
     text_chunks = []
     cur_text_chunks = []
@@ -71,15 +71,14 @@ def split_chunks(doc):
         chunk_metadata["paragraph_number"] = para_no
         chunk_metadata["title"] = title
         text_chunks.append({"text": chunk, "metadata": chunk_metadata})
-        print(f"para {para_no} done..")
         para_no += 1
 
-    print("doc done!!!")
     return text_chunks
 
 
 # converting chunks into nodes
 def chunks_to_nodes(splitted_chunks):
+    """converts chunks into nodes"""
     text = splitted_chunks["text"]
     metadata = splitted_chunks["metadata"]
     node = TextNode(
@@ -91,12 +90,14 @@ def chunks_to_nodes(splitted_chunks):
 
 # store in vector_database
 def store_in_vector_database(nodes):
+    """Stores nodes into vector database"""
     vector_store = get_vector_database()
     vector_store.add(nodes)
 
 
 # indexing
 def create_index(vector_store, embed_model):
+    """returns indexes for stored documents in vectorstore"""
     index = VectorStoreIndex.from_vector_store(
         vector_store=vector_store,
         embed_model=embed_model,

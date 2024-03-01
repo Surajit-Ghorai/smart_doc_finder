@@ -1,22 +1,22 @@
+"""using llms other than openai"""
 import os
 from dotenv import load_dotenv
 import google.generativeai as palm
 from llama_index.llms.palm import PaLM
 from llama_index.core import Settings
-from llama_index.core import PromptTemplate
 
 
 load_dotenv()
 palm_api_key = os.getenv("GOOGLE_API_KEY")
 palm.configure(api_key=palm_api_key)
 
-# Transform a string into input zephyr-specific input
 def completion_to_prompt(completion):
+    """customizing prompt"""
     return f"<|system|>\n</s>\n<|user|>\n{completion}</s>\n<|assistant|>\n"
 
 
-# Transform a list of chat messages into zephyr-specific input
 def messages_to_prompt(messages):
+    """customizing chat prompt"""
     prompt = ""
     for message in messages:
         if message.role == "system":
@@ -37,8 +37,9 @@ def messages_to_prompt(messages):
 
 
 def load_local_llm():
+    """returns gemini pro llm model"""
     local_llm_model = PaLM(
-        model="gemini-pro", 
+        model="gemini-pro",
         api_key=palm_api_key,
         messages_to_prompt= messages_to_prompt,
         completion_to_prompt=completion_to_prompt

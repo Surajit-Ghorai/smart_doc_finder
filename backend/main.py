@@ -47,7 +47,9 @@ def process_documents():
     """loads and checks new documents, if new documents present, then prosses them and embed them"""
     # load documents
     documents = load_data(FOLDER_ID)
-    print(len(documents), " docs")
+
+    if documents is None:
+        return
 
     # check new documents
     new_docs = get_new_files(documents)
