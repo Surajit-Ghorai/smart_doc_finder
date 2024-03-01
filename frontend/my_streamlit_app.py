@@ -12,13 +12,16 @@ import main
 
 def run_app():
     """the streamlit application part"""
+    main.process_documents()
     # title of the application
     st.title("Intelligent Document Finder")
 
     # sidebar
     with st.sidebar:
         st.title("About the app")
-        text = "This is a smart document finder app. Enter your query and a llm model will give you response from the documents stored in your drive folder."
+        text = """This is a smart document finder app.
+        Enter your query and a llm model will give you responses
+        from the documents stored in your drive folder."""
         st.markdown(
             f"<div style='white-space: wrap;'>{text}</div>", unsafe_allow_html=True
         )
@@ -38,7 +41,7 @@ def run_app():
         bot_response, metadata = main.get_answer(user_question)
 
     with st.container(border=True):
-        if bot_response == None or bot_response == []:
+        if bot_response is None or bot_response == []:
             st.write("## Answer")
             st.write("your answer will be displayed here!!")
         else:
@@ -49,7 +52,7 @@ def run_app():
             if "page_label" in metadata:
                 st.write(f"Page number: {metadata['page_label']}")
             else:
-                st.write(f"Page number: 1")
+                st.write("Page number: 1")
             st.write(f"Paragraph number: {metadata['paragraph_number']}")
             st.write(f"Tile: {metadata['title']}")
             st.write(f"Author of the file: {metadata['author']}")

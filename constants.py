@@ -1,4 +1,4 @@
 """It stores all constants like folder id"""
 
 # google drive folder id
-FOLDER_ID = "1iJ78DGUr-Jc-Gx2odvNuNTiBQDhUnLhE"  # "1hzk7y9TZ0lCRhaIdOOLkoJRblduoIQ3p"
+FOLDER_ID = "put your folder id here "  # example: "1iJxxxxxxx-xx-xxxxxxxxxxxxxxxxxLhE"

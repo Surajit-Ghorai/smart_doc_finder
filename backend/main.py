@@ -1,17 +1,23 @@
 """main application"""
 
 from google_drive import load_data
-from docs_processing import create_index, split_chunks, chunks_to_nodes, store_in_vector_database
+from docs_processing import (
+    create_index,
+    split_chunks,
+    chunks_to_nodes,
+    store_in_vector_database,
+)
 from local_embedding import load_local_embedding
 from query_engine import build_query_engine
 from vector_store import get_vector_database
-from constants import FOLDER_ID
 from paths import PERSIST_DIR
 import chromadb
+from constants import FOLDER_ID
 
 
 # get new files
 def get_new_files(docs):
+    """it takes all the files from drive and returns only new files"""
     all_chroma_id = get_all_chroma_id()
     all_doc_id = []
     new_docs = []
@@ -20,17 +26,11 @@ def get_new_files(docs):
         all_doc_id.append(doc_id)
         if doc_id not in all_chroma_id:
             new_docs.append(doc)
-
-    # deleting deleted files from chroma
-    for chroma_id in all_chroma_id:
-        if chroma_id not in all_doc_id:
-            delete_chroma_doc(chroma_id)
-
     return new_docs
 
 
-#
 def get_all_chroma_id():
+    """return ids of all the files embedded in the vectorstore"""
     db = chromadb.PersistentClient(path=PERSIST_DIR)
     chroma_collection = db.get_or_create_collection("my_collection")
     chroma_doc_ids = chroma_collection.get()["ids"]
@@ -43,19 +43,8 @@ def get_all_chroma_id():
 
 
 #
-def delete_chroma_doc(id):
-    db = chromadb.PersistentClient(path=PERSIST_DIR)
-    chroma_collection = db.get_or_create_collection("my_collection")
-    chroma_doc_ids = chroma_collection.get()["ids"]
-
-    for chroma_id in chroma_doc_ids:
-        file_id = chroma_collection.get(ids=chroma_id)["metadatas"][0]["file id"]
-        if file_id == id:
-            chroma_collection.delete(ids=chroma_id)
-
-
-#
-def get_answer(question):
+def process_documents():
+    """loads and checks new documents, if new documents present, then prosses them and embed them"""
     # load documents
     documents = load_data(FOLDER_ID)
     print(len(documents), " docs")
@@ -82,6 +71,9 @@ def get_answer(question):
     # storing
     store_in_vector_database(all_nodes)
 
+
+def get_answer(question):
+    """retrieves context from vectordb and gets answer from LLM"""
     # creating index
     index = create_index(get_vector_database(), load_local_embedding())
 
@@ -95,4 +87,4 @@ def get_answer(question):
     response_text = response.response
     metadata = response.source_nodes[0].metadata
 
-    return response_text,metadata
+    return response_text, metadata
