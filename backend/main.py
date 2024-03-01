@@ -19,11 +19,13 @@ from constants import FOLDER_ID
 def get_new_files(docs):
     """it takes all the files from drive and returns only new files"""
     all_chroma_id = get_all_chroma_id()
-    all_doc_id = []
+    # if vector db is empty, it means all docs are new docs
+    if all_chroma_id is None:
+        return docs
+
     new_docs = []
     for doc in docs:
         doc_id = doc.metadata["file id"]
-        all_doc_id.append(doc_id)
         if doc_id not in all_chroma_id:
             new_docs.append(doc)
     return new_docs
@@ -34,6 +36,9 @@ def get_all_chroma_id():
     db = chromadb.PersistentClient(path=PERSIST_DIR)
     chroma_collection = db.get_or_create_collection("my_collection")
     chroma_doc_ids = chroma_collection.get()["ids"]
+
+    if chroma_doc_ids is None:
+        return None
 
     all_file_id = set()
     for chroma_id in chroma_doc_ids:
@@ -53,7 +58,8 @@ def process_documents():
 
     # check new documents
     new_docs = get_new_files(documents)
-
+    if new_docs is None:
+        return
     # chunks + nodes
     all_nodes = []
     for doc in new_docs:
@@ -87,6 +93,10 @@ def get_answer(question):
 
     # metadata retrieval
     response_text = response.response
-    metadata = response.source_nodes[0].metadata
+    source_nodes = response.source_nodes
+    if source_nodes is not None:
+        metadata = response.source_nodes[0].metadata
+    else:
+        metadata = None
 
     return response_text, metadata

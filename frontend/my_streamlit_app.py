@@ -48,11 +48,14 @@ def run_app():
             st.write("## Answer")
             st.write(bot_response)
             st.write("### Additional information")
-            st.write(f"File name: {metadata['file name']}")
-            if "page_label" in metadata:
-                st.write(f"Page number: {metadata['page_label']}")
+            if metadata is None:
+                st.write("No metadata found!!")
             else:
-                st.write("Page number: 1")
-            st.write(f"Paragraph number: {metadata['paragraph_number']}")
-            st.write(f"Tile: {metadata['title']}")
-            st.write(f"Author of the file: {metadata['author']}")
+                st.write(f"File name: {metadata['file name']}")
+                if "page_label" in metadata:
+                    st.write(f"Page number: {metadata['page_label']}")
+                else:
+                    st.write("Page number: 1")
+                st.write(f"Paragraph number: {metadata['paragraph_number']}")
+                st.write(f"Tile: {metadata['title']}")
+                st.write(f"Author of the file: {metadata['author']}")
