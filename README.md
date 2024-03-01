@@ -11,6 +11,7 @@ This project automates document upload, processing, and search functionality, en
 - **Search Interface:** Utilize a user-friendly frontend to search the indexed data, retrieving relevant document snippets and comprehensive metadata.
 
 **Video documentation link:** <https://drive.google.com/file/d/1CD2wHhhvycIiTHPCPjNVRjB--tUbI_A9/view?usp=sharing>
+
 **Tech Stack:**
 
 - Python (>= 3.11 and < 3.12)
