@@ -10,6 +10,7 @@ This project automates document upload, processing, and search functionality, en
 - **Processing and Indexing:** Automatically transfer documents to a server, process them using Llama Index, and create a searchable database with detailed metadata (titles, paragraph numbers, page numbers, etc.).
 - **Search Interface:** Utilize a user-friendly frontend to search the indexed data, retrieving relevant document snippets and comprehensive metadata.
 
+**Video documentation link:** <https://drive.google.com/file/d/1CD2wHhhvycIiTHPCPjNVRjB--tUbI_A9/view?usp=sharing>
 **Tech Stack:**
 
 - Python (>= 3.11 and < 3.12)
