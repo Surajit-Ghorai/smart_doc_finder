@@ -3,11 +3,15 @@
 import os.path
 import sys
 import streamlit as st
+import requests
 
 # importing main module from backend
-backend_dir = os.path.abspath("./backend")
+backend_dir = os.path.abspath("./authentication")
 sys.path.insert(1, backend_dir)
 import main
+auth_dir = os.path.abspath("./authentication")
+sys.path.insert(3, auth_dir)
+import my_api
 
 
 def run_app():
@@ -38,7 +42,14 @@ def run_app():
     bot_response = []
     # getting the answer from backend parts
     if user_question:
-        bot_response, metadata = main.get_answer(user_question)
+        register_api_url = f"http://127.0.0.1:8000/getanswer/{user_question}"
+        response = requests.get(register_api_url)
+        print(response)
+        print(response.text)
+        bot_response, metadata = (
+            response.json()["bot_response"],
+            response.json()["metadata"],
+        )
 
     with st.container(border=True):
         if bot_response is None or bot_response == []:
