@@ -3,12 +3,12 @@
 import streamlit as st
 import requests
 from time import sleep
-from st_pages import Page, show_pages
+from st_pages import Page, hide_pages
 
 
 def signup_app():
     """sign up page"""
-    #show_pages([Page("pages/login_page.py")])
+    hide_pages([Page("/app.py")])
 
     # title of the application
     st.title("Intelligent Document Finder")
@@ -61,9 +61,24 @@ def signup_app():
                 if response.status_code == 200:
                     st.success("registered successfully!!")
                     st.toast("registered successfully!!", icon="🥂")
-                    with st.spinner('loading the login page...'):
-                        sleep(2)
-                    st.switch_page("pages/login_page.py")
+                    with st.spinner('loading the home page...'):
+                        login_api_url = "http://127.0.0.1:8000/login"
+                        login_data = {
+                            "email": email,
+                            "password": password,
+                        }
+                        response = requests.post(login_api_url, json=login_data)
+
+                        if response.status_code == 200:
+                            print("logged in successfully...")
+                            st.session_state["logged_in"] = True
+                            st.session_state["access_token"] =response.json()["access_token"]
+                            st.session_state["refresh_token"] = response.json()["refresh_token"]
+                        else:
+                            st.error("there was some issue in automatic login, goto login page")
+
+                        sleep(1)
+                    st.switch_page("pages/homepage.py")
                 else:
                     st.error(f"error: {response.status_code}, {response.text}")
             else:

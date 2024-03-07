@@ -3,12 +3,19 @@
 import streamlit as st
 import requests
 from time import sleep
-from st_pages import Page, show_pages
+from st_pages import Page, hide_pages
 
+def check_login():
+    if "logged_in" not in st.session_state:
+        login_app()
+    elif st.session_state["logged_in"]:
+        st.error("already logged in, log out first")
+    else:
+        login_app()
 
 def login_app():
     """log in page"""
-    # show_pages([Page("pages/signup.py")])
+    hide_pages([Page("/app.py")])
 
     # title of the application
     st.title("Intelligent Document Finder")
@@ -22,7 +29,6 @@ def login_app():
         st.markdown(
             f"<div style='white-space: wrap;'>{text}</div>", unsafe_allow_html=True
         )
-        
 
     st.text("welcome to the application")
     st.text("Please login first")
@@ -71,4 +77,4 @@ def login_app():
     st.text("Don't have an account. Register below 👇")
     st.page_link("pages/signup.py", label="sign up")
 
-login_app()
+check_login()

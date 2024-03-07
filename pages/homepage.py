@@ -5,7 +5,7 @@ import sys
 import streamlit as st
 import requests
 from time import sleep
-from st_pages import Page, show_pages
+from st_pages import Page, hide_pages
 
 backend_dir = os.path.abspath("./backend")
 sys.path.insert(2, backend_dir)
@@ -13,6 +13,7 @@ import main
 
 def homepage():
     """the streamlit application part"""
+    hide_pages([Page("/app.py")])
     logged_in = False
     if "logged_in" in st.session_state:
         logged_in = st.session_state["logged_in"]
@@ -66,7 +67,7 @@ def homepage():
                 access_token = st.session_state["access_token"]
                 headers = {"Authorization": f"Bearer {access_token}"}
                 response = requests.get(register_api_url, headers= headers)
-                
+
                 print(response.text)
                 if response.status_code==200:
                     bot_response, metadata = (

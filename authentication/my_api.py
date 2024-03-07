@@ -12,7 +12,7 @@ from database import Base, engine, SessionLocal
 from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer
-from auth_bearer import JWTBearer
+from auth_bearer import JWTBearer, verify_jwt
 from functools import wraps
 from utils import (
     create_access_token,
@@ -89,15 +89,41 @@ def login(request: schemas.requestdetails, db: Session = Depends(get_session)):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect password"
         )
+    # check if user already have token id or not
+    token = db.query(models.TokenTable).filter(models.TokenTable.user_id == user.user_id).first()
+    access=""
+    refresh=""
+    if token is None:
+        access = create_access_token(user.user_id)
+        refresh = create_refresh_token(user.user_id)
+        token_db = models.TokenTable(
+            user_id=user.user_id, access_token=access, refresh_token=refresh, status=True
+        )
+        db.add(token_db)
+        db.commit()
+        db.refresh(token_db)
+    else:
+        access = token.access_token
+        refresh = token.refresh_token
+        # check if existing token is valid or not, if not valid, generate new access token
+        if verify_jwt(access):
+            token.status=True
+            db.commit()
+        else:
+            db.delete(token)
+            db.commit()
+            access = create_access_token(user.user_id)
+            refresh = create_refresh_token(user.user_id)
+            token_db = models.TokenTable(
+                user_id=user.user_id,
+                access_token=access,
+                refresh_token=refresh,
+                status=True,
+            )
+            db.add(token_db)
+            db.commit()
+            db.refresh(token_db)
 
-    access = create_access_token(user.user_id)
-    refresh = create_refresh_token(user.user_id)
-    token_db = models.TokenTable(
-        user_id=user.user_id, access_token=access, refresh_token=refresh, status=True
-    )
-    db.add(token_db)
-    db.commit()
-    db.refresh(token_db)
     return {
         "access_token": access,
         "refresh_token": refresh,
