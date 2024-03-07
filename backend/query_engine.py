@@ -23,7 +23,7 @@ def build_query_engine(index):
     query_engine = RetrieverQueryEngine(
         retriever=retriever,
         response_synthesizer=response_synthesizer,
-        node_postprocessors=[SimilarityPostprocessor(similarity_cutoff=0.3)],
+        node_postprocessors=[SimilarityPostprocessor(similarity_cutoff=0.4)],
     )
 
     return query_engine

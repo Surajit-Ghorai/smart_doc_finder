@@ -6,8 +6,8 @@ import streamlit as st
 import requests
 
 # importing main module from backend
-backend_dir = os.path.abspath("./authentication")
-sys.path.insert(1, backend_dir)
+backend_dir = os.path.abspath("./backend")
+sys.path.insert(4, backend_dir)
 import main
 auth_dir = os.path.abspath("./authentication")
 sys.path.insert(3, auth_dir)

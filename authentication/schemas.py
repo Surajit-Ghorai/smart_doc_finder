@@ -1,5 +1,6 @@
 """schemas"""
 from pydantic import BaseModel
+from typing import Optional
 import datetime
 
 class User(BaseModel):
@@ -30,3 +31,8 @@ class TokenCreate(BaseModel):
     refresh_token: str
     status: bool
     created_date: datetime.datetime
+
+class AnswerSchema(BaseModel):
+    user_question: str
+    bot_response: Optional[str] = None
+    metadata: Optional[dict] = None

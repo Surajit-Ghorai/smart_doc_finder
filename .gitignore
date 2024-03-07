@@ -12,3 +12,5 @@
 /__pycache__/
 /backend/docs2.py
 /backend/main2.py
+/pages/__pycache__/
+/.pyc

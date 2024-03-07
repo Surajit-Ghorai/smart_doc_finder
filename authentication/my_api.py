@@ -1,4 +1,5 @@
 """register"""
+
 import os
 import uvicorn
 import schemas
@@ -31,9 +32,9 @@ import main
 
 # env variables
 load_dotenv()
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
-REFRESH_TOKEN_EXPIRE_MINUTES = int(os.getenv("REFRESH_TOKEN_EXPIRE_MINUTES"))
-ALGORITHM = os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+REFRESH_TOKEN_EXPIRE_MINUTES = 7 * 24 * 30
+ALGORITHM = "HS256"
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 JWT_REFRESH_SECRET_KEY = os.getenv("JWT_REFRESH_SECRET_KEY")
 
@@ -50,6 +51,11 @@ def get_session():
 
 
 app = FastAPI()
+
+
+@app.get("/")
+async def root():
+    return {"message": "welcome to my application"}
 
 
 @app.post("/register")
@@ -73,9 +79,7 @@ def register_user(user: schemas.User, session: Session = Depends(get_session)):
 
 @app.post("/login", response_model=schemas.TokenSchema)
 def login(request: schemas.requestdetails, db: Session = Depends(get_session)):
-    print("inside login api")
     user = db.query(User).filter(User.email == request.email).first()
-    print(f"{user.username}, {user.password}")
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect email"
@@ -88,7 +92,6 @@ def login(request: schemas.requestdetails, db: Session = Depends(get_session)):
 
     access = create_access_token(user.user_id)
     refresh = create_refresh_token(user.user_id)
-    print(access, refresh)
     token_db = models.TokenTable(
         user_id=user.user_id, access_token=access, refresh_token=refresh, status=True
     )
@@ -139,7 +142,6 @@ def logout(dependencies=Depends(JWTBearer()), db: Session = Depends(get_session)
     token_record = db.query(models.TokenTable).all()
     info = []
     for record in token_record:
-        print("record", record)
         if (datetime.now() - record.created_date).days > 1:
             info.append(record.user_id)
     if info:
@@ -151,7 +153,8 @@ def logout(dependencies=Depends(JWTBearer()), db: Session = Depends(get_session)
     existing_token = (
         db.query(models.TokenTable)
         .filter(
-            models.TokenTable.user_id == user_id, models.TokenTable.access_token == token
+            models.TokenTable.user_id == user_id,
+            models.TokenTable.access_token == token,
         )
         .first()
     )
@@ -163,13 +166,25 @@ def logout(dependencies=Depends(JWTBearer()), db: Session = Depends(get_session)
     return {"message": "Logout Successfully"}
 
 
-@app.get("/getanswer/{question}")
+@app.get("/getanswer/{folder_id}/{question}", response_model=schemas.AnswerSchema)
 def getanswer(
+    folder_id: str,
     question: str,
-    dependencies=Depends(JWTBearer()), session: Session = Depends(get_session)
+    dependencies=Depends(JWTBearer()),
+    session: Session = Depends(get_session),
 ):
-    bot_response, metadata = main.get_answer(question)
-    return {"user_question": question, "bot_response":bot_response, "metadata":metadata}
+    loading = main.process_documents(folder_id)
+    if loading == "success" or loading == "no_new_file":
+        bot_response, metadata = main.get_answer(question, folder_id)
+        return {
+            "user_question": question,
+            "bot_response": bot_response,
+            "metadata": metadata
+        }
+    else:
+        raise HTTPException (
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid folder_id"
+        )
 
 
 def token_required(func):
@@ -181,7 +196,9 @@ def token_required(func):
         data = (
             kwargs["session"]
             .query(models.TokenTable)
-            .filter_by(user_id=user_id, access_token=kwargs["dependencies"], status=True)
+            .filter_by(
+                user_id=user_id, access_token=kwargs["dependencies"], status=True
+            )
             .first()
         )
         if data:
@@ -191,6 +208,7 @@ def token_required(func):
             return {"msg": "Token blocked"}
 
     return wrapper
+
 
 if __name__ == "__main__":
     uvicorn.run("my_api:app", host="127.0.0.1", port=8000, reload=True)
