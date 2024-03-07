@@ -13,6 +13,10 @@ from local_llm_model import load_local_llm
 
 from vector_store import get_vector_database
 
+"""
+for multi-doc support, passing folderid in store_in_vector_database
+also removed title from metadata for now
+"""
 # loading api key
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
