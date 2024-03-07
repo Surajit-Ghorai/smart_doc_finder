@@ -9,6 +9,7 @@ from paths import PERSIST_DIR
 
 
 # vector database
+# now creating collections for each folder id
 def get_vector_database(collection_name):
     """returns vectorstore"""
     db = chromadb.PersistentClient(path=PERSIST_DIR)

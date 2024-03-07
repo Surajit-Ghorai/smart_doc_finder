@@ -13,7 +13,10 @@ from vector_store import get_vector_database
 from paths import PERSIST_DIR
 import chromadb
 
-
+"""
+for multifolder support, passing the folder id in 
+process_documents(), get_new_files(), get_all_chroma_id(), get_vector_database()
+"""
 # get new files
 def get_new_files(docs, folder_id):
     """it takes all the files from drive and returns only new files"""
