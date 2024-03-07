@@ -67,11 +67,12 @@ def split_chunks(doc):
     para_no = 1
     for chunk in cur_text_chunks:
         chunk_metadata = doc.metadata.copy()
-        title = extract_title(chunk)
+        # title = extract_title(chunk)
         chunk_metadata["paragraph_number"] = para_no
-        chunk_metadata["title"] = title
+        # chunk_metadata["title"] = title
         text_chunks.append({"text": chunk, "metadata": chunk_metadata})
         para_no += 1
+        print("splitting going on..")
 
     return text_chunks
 
@@ -89,9 +90,9 @@ def chunks_to_nodes(splitted_chunks):
 
 
 # store in vector_database
-def store_in_vector_database(nodes):
+def store_in_vector_database(nodes, folder_id):
     """Stores nodes into vector database"""
-    vector_store = get_vector_database()
+    vector_store = get_vector_database(folder_id)
     vector_store.add(nodes)
 
 

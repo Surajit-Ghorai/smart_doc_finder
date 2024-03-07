@@ -9,10 +9,10 @@ from paths import PERSIST_DIR
 
 
 # vector database
-def get_vector_database():
+def get_vector_database(collection_name):
     """returns vectorstore"""
     db = chromadb.PersistentClient(path=PERSIST_DIR)
-    chroma_collection = db.get_or_create_collection("my_collection")
+    chroma_collection = db.get_or_create_collection(collection_name)
     vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
 
     return vector_store
