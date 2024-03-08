@@ -11,6 +11,7 @@ This project automates document upload, processing, and search functionality, en
 - **Search Interface:** Utilize a user-friendly frontend to search the indexed data, retrieving relevant document snippets and comprehensive metadata.
 
 **Video documentation link:** <https://drive.google.com/file/d/1CD2wHhhvycIiTHPCPjNVRjB--tUbI_A9/view?usp=sharing>
+                              <https://drive.google.com/file/d/1tI3rPif05mp__Pu7NFJ8crO2MR2sV_b5/view?usp=drive_link>
 
 **Tech Stack:**
 
@@ -40,11 +41,12 @@ This project automates document upload, processing, and search functionality, en
 **Usage Instructions:**
 
 1. Go to the project directory.
-1. Open your terminal.
-1. Run the application using streamlit run app.py.
-1. The Streamlit app will launch in your web browser, but might take some time to load initially (especially during the first run).
-1. Enter your search query in the user interface.
-1. The app will retrieve and display relevant document snippets with detailed metadata matching your search.
+2. Open your terminal.
+3. run python authentication/my_api.py
+4. Run the application using streamlit run app.py.
+5. The Streamlit app will launch in your web browser, but might take some time to load initially (especially during the first run).
+6. Enter your search query in the user interface.
+7. The app will retrieve and display relevant document snippets with detailed metadata matching your search.
 
 **System architecture:**
 
