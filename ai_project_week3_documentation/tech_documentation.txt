@@ -1,0 +1,115 @@
+Project title: Add Login and Signup Functionality to Intelligent Document Finder Project
+
+
+Tasks division:
+I have divided the whole task into the following features:
+	1. Authentication
+		I. Login
+		II. Signup
+		III. Logout
+2. Folder-by-folder search
+
+
+
+* Features in detailed:
+    Authentication:
+        Techstacks:
+          1. Python
+          2. Streamlit
+          3. Fastapi
+          4. JWT authentication
+          5. PostgreSQL database
+    Signup:
+
+      Approach:
+        Signup page will have :
+        a form containing fields: username, email, password
+        A signup button
+        A login button (if already registered, it will take to login page)
+        On filling all the fields on the signup form and submitting the button. The data will be send to signup api endpoint
+        The password will be encoded and the user data will be stored in the database.
+        The user will be logged in and will be taken to homepage.
+
+
+  Login:
+
+    Approach:
+      Login page will have :
+      a form containing fields: email, password
+      A login button
+      A signup button (if not already registered, it will take to signup page)
+      On filling all the fields on the login form and submitting the button. The data will be sent to the login api endpoint and generate access token and refresh token.
+      The tokens will be stored in the database for that user_id.
+      The user will be logged in and taken to the homepage.
+      After closing the app, if the user opens again, the user will stay logged in.
+
+  Logout:
+    Approach:
+      There will be a logout button on the main page.
+      After clicking the button, the user access token will be deleted from the token table in the database through fastapi and the user will be logged out.
+      When the user will enter the app, they need to login again.
+  
+
+Folder-by-folder search:
+  Techstacks:
+    1. Python 
+    2. Google drive api
+    3. Llamaindex
+    4. Chromadb
+    5. Openai/ gemini-pro llm model
+    6. huggingface embedding model
+
+
+  Approach:
+    There will be an input field in the homepage.
+    When a user will login, after that it will ask for a folder id and load data for that folder id.
+    At any moment the user can provide a new folder id, it will then load the documents for that new folder id.
+    If the user provides the old folder id again, it will only load any new files if available.
+    Whenever a folder id is given, the system will check if the files are already embedded in the database or not, if not then it will embed and index them before querying.
+
+Extras:
+  Database design:
+    Techstacks:
+      1. Python
+      2. Postgresql database
+      3. Sqlalchemy
+
+    Approach:
+      Creating models for all database tables
+      Creating database
+
+    Database schema:
+      Users (
+      user_id : int,
+      username : varchar, 
+      email : varchar, 
+      password : varchar
+      )
+
+      Token (
+      user_id : int, 
+      access_token : varchar, 
+      Refresh_token : varchar,
+      Status : varchar, 
+      created_date : datetime
+      )
+
+
+API design:
+  Techstacks:
+    1. Python
+    2. Fastapi
+    3. Uvicorn
+  
+  Approach:
+    Designing all the api endpoints
+    Creating pydantic classes for fastapi inputs and outputs validation
+    Adding data into and from the database through api.
+  
+  API endpoints:
+    post("/register")
+    post("/login")
+    get("/getusers")
+    post("/change-password")
+    post("/logout")
+    get(“/getanswer/{folder_id}/{question}”)
