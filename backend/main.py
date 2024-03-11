@@ -54,9 +54,18 @@ def get_all_chroma_id(folder_id):
     return list(all_file_id)
 
 
+def retrieve_folder_id(folder_url):
+    """retrieves folder id from url"""
+    folder_id = re.search(r"folders/([^/?]+)", folder_url)
+    if folder_id:
+        return folder_id.group(1)
+    else:
+        return folder_url
+
 #
 def process_documents(folder_id):
     """loads and checks new documents, if new documents present, then prosses them and embed them"""
+    folder_id = retrieve_folder_id(folder_id)
     # load documents
     documents = load_data(folder_id)
     print("load done...")
@@ -94,6 +103,7 @@ def process_documents(folder_id):
 
 def get_answer(question, folder_id):
     """retrieves context from vectordb and gets answer from LLM"""
+    folder_id = retrieve_folder_id(folder_id)
     try:
         print("finding your answer..")
         # creating index
