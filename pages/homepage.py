@@ -11,6 +11,14 @@ backend_dir = os.path.abspath("./backend")
 sys.path.insert(2, backend_dir)
 import main
 
+def retrieve_folder_id(folder_url):
+    """retrieves folder id from url"""
+    folder_id = re.search(r"folders/([^/?]+)", folder_url)
+    if folder_id:
+        return folder_id.group(1)
+    else:
+        return folder_url
+
 def homepage():
     """the streamlit application part"""
     hide_pages([Page("/app.py")])
@@ -37,6 +45,7 @@ def homepage():
             )
 
             folder_id = st.text_input("enter folder id", placeholder="enter folder id")
+            folder_id = retrieve_folder_id(folder_id)
             if "folder_id" not in st.session_state:
                 if folder_id:
                     st.session_state["folder_id"] = folder_id
