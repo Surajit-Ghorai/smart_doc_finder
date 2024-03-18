@@ -1,5 +1,6 @@
 """main application"""
 
+import re
 from google_drive import load_data
 from docs_processing import (
     create_index,
