@@ -17,9 +17,13 @@ instructorembedding==1.0.1
 sentence-transformers==2.2.2
 llama-index-llms-palm==0.1.3
 google-generativeai==0.3.2
-psycopg2 == 2.9.9
-pyjwt == 2.8.0
-sqlalchemy == 2.0.28
-passlib == 1.7.4
-python-jose == 3.3.0
-st-pages == 0.4.5
+psycopg2==2.9.9
+pyjwt==2.8.0
+sqlalchemy==2.0.28
+passlib==1.7.4
+python-jose==3.3.0
+st-pages==0.4.5
+uvicorn==0.28.0
+fastapi==0.110.0
+chromadb==0.4.24
+llama-index-vector-stores-chroma==0.1.6
