@@ -11,6 +11,7 @@ from st_pages import Page, hide_pages
 backend_dir = os.path.abspath("./backend")
 sys.path.insert(2, backend_dir)
 import main
+import onedriveloader
 
 def retrieve_folder_id(folder_url):
     """retrieves folder id from url"""
@@ -45,7 +46,9 @@ def homepage():
                 f"<div style='white-space: wrap;'>{text}</div>", unsafe_allow_html=True
             )
 
-            folder_id = st.text_input("enter folder id", placeholder="enter folder id")
+            auth_onedrive_button = st.button(
+                label="authenticate onedrive", on_click=onedriveloader.
+            )
             folder_id = retrieve_folder_id(folder_id)
             if "folder_id" not in st.session_state:
                 if folder_id:

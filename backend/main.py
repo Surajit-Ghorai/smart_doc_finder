@@ -1,7 +1,9 @@
 """main application"""
 
 import re
+import docs_processing_onedrive
 from google_drive import load_data
+from backend.onedriveloader import load_data_onedrive
 from docs_processing import (
     create_index,
     split_chunks,
@@ -63,7 +65,7 @@ def retrieve_folder_id(folder_url):
     else:
         return folder_url
 
-#
+# for google drive
 def process_documents(folder_id):
     """loads and checks new documents, if new documents present, then prosses them and embed them"""
     folder_id = retrieve_folder_id(folder_id)
@@ -102,9 +104,46 @@ def process_documents(folder_id):
     return "success"
 
 
+# for one drive
+def process_documents_onedrive():
+    """loads and checks new documents, if new documents present, then prosses them and embed them"""
+    # load documents
+    documents = load_data_onedrive()
+    print("load done...")
+
+    if documents is None:
+        return "invalid_folder"
+
+    # check new documents
+    new_docs = get_new_files(documents,"root")
+    if new_docs is None:
+        return "no_new_file"
+    # chunks + nodes
+    all_nodes = []
+    for doc in new_docs:
+        chunks = split_chunks(doc)
+        for chunk in chunks:
+            node = chunks_to_nodes(chunk)
+            all_nodes.append(node)
+
+    print("chunk done...")
+    # embedding
+    for node in all_nodes:
+        embed_model = load_local_embedding()
+        node_embedding = embed_model.get_text_embedding(
+            node.get_content(metadata_mode="all")
+        )
+        node.embedding = node_embedding
+    print("embedding done...")
+    # storing
+    store_in_vector_database(all_nodes)
+    print("storing in vector db done..")
+
+    return "success"
+
+
 def get_answer(question, folder_id):
     """retrieves context from vectordb and gets answer from LLM"""
-    folder_id = retrieve_folder_id(folder_id)
     try:
         print("finding your answer..")
         # creating index
