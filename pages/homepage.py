@@ -20,6 +20,22 @@ def retrieve_folder_id(folder_url):
     else:
         return folder_url
 
+def authenticate_onedrive():
+    api_url = f"http://127.0.0.1:8000/authenticate-onedrive"
+    access_token = st.session_state["access_token"]
+    headers = {"Authorization": f"Bearer {access_token}"}
+    response = requests.get(api_url, headers= headers)
+    st.session_state["onedrive"]=True
+
+
+def authenticate_googledrive():
+    api_url = f"http://127.0.0.1:8000/authenticate-googledrive"
+    access_token = st.session_state["access_token"]
+    headers = {"Authorization": f"Bearer {access_token}"}
+    response = requests.get(api_url, headers=headers)
+    st.session_state["googledrive"] = True
+
+
 def homepage():
     """the streamlit application part"""
     hide_pages([Page("/app.py")])
@@ -40,22 +56,17 @@ def homepage():
             st.title("About the app")
             text = """This is a smart document finder app.
             Enter your query and a llm model will give you responses
-            from the documents stored in your drive folder."""
+            from the documents stored in your drive folder.
+            first authenticate your drives:
+            """
             st.markdown(
                 f"<div style='white-space: wrap;'>{text}</div>", unsafe_allow_html=True
             )
 
-            folder_id = st.text_input("enter folder id", placeholder="enter folder id")
-            folder_id = retrieve_folder_id(folder_id)
-            if "folder_id" not in st.session_state:
-                if folder_id:
-                    st.session_state["folder_id"] = folder_id
-                    with st.spinner("documents loading"):
-                        main.process_documents(folder_id)
-            elif st.session_state["folder_id"] != folder_id:
-                st.session_state["folder_id"] = folder_id
-                with st.spinner("documents loading"):
-                    main.process_documents(folder_id)
+            if st.button("authenticate and load onedrive"):
+                authenticate_onedrive()
+            if st.button("authenticate and load googledrive"):
+                authenticate_googledrive()
 
         # text input field for the user question
         user_question = st.text_input(
@@ -70,10 +81,11 @@ def homepage():
         # getting the answer from backend parts
         if user_question:
             # print(st.session_state)
-            if "folder_id" not in st.session_state:
-                st.error("please enter a folder id")
-            elif st.session_state["folder_id"]:
-                register_api_url = f"http://127.0.0.1:8000/getanswer/{st.session_state['folder_id']}/{user_question}"
+            if "onedrive" not in st.session_state or "googledrive" not in st.session_state:
+                st.error("please authenticate onedrive or googledrive")
+            elif st.session_state["onedrive"] or st.session_state["googledrive"]:
+                folder_id = "my_collection"
+                register_api_url = f"http://127.0.0.1:8000/getanswer/{folder_id}/{user_question}"
                 access_token = st.session_state["access_token"]
                 headers = {"Authorization": f"Bearer {access_token}"}
                 response = requests.get(register_api_url, headers= headers)
@@ -87,7 +99,7 @@ def homepage():
                 else:
                     st.error("not authenticated")
             else:
-                st.error("enter folder id first")
+                st.error("authenticate drive first")
 
         with st.container(border=True):
             if bot_response is None or bot_response == []:
@@ -108,7 +120,7 @@ def homepage():
                         st.write(f"Page number: {metadata['page_label']}")
                     else:
                         st.write("Page number: 1")
-                    st.write(f"Paragraph number: {metadata['paragraph_number']}")
+                    st.write(f"Drive: {metadata['drive_type']}")
                     st.write(f"Author of the file: {metadata['author']}")
     else:
         st.error("Log in first!!!")
