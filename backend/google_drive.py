@@ -21,9 +21,10 @@ SCOPES = ["https://www.googleapis.com/auth/drive"]
 
 class My_GoogleDriveReader(GoogleDriveReader):
     """overriding the GoogleDriveReader class to enable oauth instead of service account"""
+
     def __init__(
         self,
-        credentials_path: str = "my_cred.json",
+        credentials_path: str = "credentials.json",
         token_path: str = "token.json",
         pydrive_creds_path: str = "creds.txt",
     ) -> None:
@@ -199,5 +200,6 @@ def load_google_drive():
     print(f"file ids: {root_id}")
     load_documents_parallely(root_id)
 
-#load_google_drive()
-#print(auth_googledrive())
+
+# load_google_drive()
+# print(auth_googledrive())
