@@ -1,0 +1,27 @@
+Technical Documentation of Week4 Task 
+
+Project Title: Intelligent Document Finder with Llama Index
+
+Objective of this weeks task:
+1. Extend the functionality of the project to support OneDrive.
+2. To enable complete integration with Google Drive and OneDrive, granting unrestricted access to all contents, not just folder links.
+
+My approach:
+1. First I tried to understand the task requirement, then researched about the topic, then broke the task into features.
+2. For the following task, I’m going to add only one feature i.e. OneDrive integration
+3. For granting unrestricted access of google drive, i’ll modify the the code of existing feature : Google drive integration
+4. I’ll add a functionality so that it can differentiate Google drive folder link and Onedrive folder link. I'm planning on adding a radio button in frontend to select the drive type and choose the data loader accordingly.
+
+Feature:
+OneDrive Integration:
+	Techstack used:
+    1. Python
+    2. OneDrive
+    3. Microsoft entra
+    4. Llama hub
+	
+	Implementation idea:
+    * At first I’m going to register a new application in Microsoft Entra, then in api permissions under microsoft graph, grant permissions of all required APIs.
+    * Then retrieve the client id of the application.
+    * After that, I'll use the onedrive loader from llamahub to load documents from onedrive. I’ll pass the client id to the onedrive loader.
+    * After that I’ll pass the documents in my previous RAG pipeline.
