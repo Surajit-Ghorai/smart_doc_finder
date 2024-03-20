@@ -6,8 +6,10 @@ This project automates document upload, processing, and search functionality, en
 
 **Features:**
 
-- **Document Upload:** Upload documents of various formats (.txt, .pdf, .docx, .csv, .pptx etc.) to a designated Google Drive folder.
+- **GoogleDrive Integration:** Load data from google drive and the documents can be used for question answering through RAG pipeline.
+- **OneDrive Integration:** Load data from one drive and the documents can be used for question answering through RAG pipeline.
 - **Processing and Indexing:** Automatically transfer documents to a server, process them using Llama Index, and create a searchable database with detailed metadata (titles, paragraph numbers, page numbers, etc.).
+- **JWT authentication:** Users can securely login, signup and logout
 - **Search Interface:** Utilize a user-friendly frontend to search the indexed data, retrieving relevant document snippets and comprehensive metadata.
 
 **Video documentation link:** <https://drive.google.com/file/d/1CD2wHhhvycIiTHPCPjNVRjB--tUbI_A9/view?usp=sharing>
@@ -22,21 +24,24 @@ This project automates document upload, processing, and search functionality, en
 - Streamlit
 - Google Drive API
 - Google Cloud Console
+- OneDrive API
+- Microsoft Entra
+- PostgreSQL
 
 **Setup Instructions:**
 
 1. **Prerequisites:** Ensure you have a Python version greater than or equal to 3.11, but strictly less than 3.12 installed on your system.
-1. **Code Acquisition:** Download the code from the GitHub repository or clone it using your preferred method.
-1. **Virtual Environment:** Create a virtual environment using python -m venv your\_venv\_name.
-1. **Activate Environment:** Activate the virtual environment:
+2. **Code Acquisition:** Download the code from the GitHub repository or clone it using your preferred method.
+3. **Virtual Environment:** Create a virtual environment using python -m venv your\_venv\_name.
+4. **Activate Environment:** Activate the virtual environment:
    1. Windows: .your\_venv\_name\Scripts\activate
-   1. Linux / Mac OS: source your\_venv\_name/bin/activate
-1. **Install Dependencies:** Install requirements listed in requirements.txt using pip install -r requirements.txt.
-1. **Configuration:**
+   2. Linux / Mac OS: source your\_venv\_name/bin/activate
+5. **Install Dependencies:** Install requirements listed in requirements.txt using pip install -r requirements.txt.
+6. **Configuration:**
    1. Create a .env folder and store your Google PALM API key there.
-   1. Create a Google Cloud Platform (GCP) project, enable the Google Drive API, and create a service account.
-   1. Download the service account key file and rename it to credentials.json in the project directory.
-   1. In constants.py, update the FOLDER\_ID variable with the ID of the Google Drive folder where documents are stored.
+   2. Create a Google Cloud Platform (GCP) project, enable the Google Drive API, and create a credential for OAuth 2.0 Client IDs.
+   3. Download the credentials file and rename it to credentials.json in the project directory.
+   4. Similarly, create an application in microsoft entra, enable onedrive api in microsoft graph and get the client id and store in environment variables.
 
 **Usage Instructions:**
 
