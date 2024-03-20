@@ -217,6 +217,7 @@ def getanswer(
 async def authen_onedrive(dependencies=Depends(JWTBearer())):
     try:
         access_token = onedriveloader.auth_onedrive()
+        load_onedrive(access_token)
         return {"message":access_token}
     except HTTPException:
         raise HTTPException(
@@ -228,6 +229,7 @@ async def authen_onedrive(dependencies=Depends(JWTBearer())):
 async def authen_googledrive(dependencies=Depends(JWTBearer())):
     try:
         access_token = google_drive.auth_googledrive()
+        load_google_drive()
         return {"message": "authentication successful"}
     except HTTPException:
         raise HTTPException(
