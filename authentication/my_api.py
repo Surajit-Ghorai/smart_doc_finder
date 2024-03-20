@@ -1,7 +1,6 @@
 """register"""
 
 import os
-import uvicorn
 import schemas
 import models
 import jwt
@@ -11,7 +10,6 @@ from models import User, TokenTable
 from database import Base, engine, SessionLocal
 from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from fastapi.security import OAuth2PasswordBearer
 from auth_bearer import JWTBearer, verify_jwt
 from functools import wraps
 from utils import (
@@ -29,6 +27,8 @@ import streamlit as st
 backend_dir = os.path.abspath("./backend")
 sys.path.insert(1, backend_dir)
 import main
+import onedriveloader
+import google_drive
 
 # env variables
 load_dotenv()
@@ -199,7 +199,8 @@ def getanswer(
     dependencies=Depends(JWTBearer()),
     session: Session = Depends(get_session),
 ):
-    loading = main.process_documents(folder_id)
+    # loading = main.process_documents(folder_id)
+    loading = "success"
     if loading == "success" or loading == "no_new_file":
         bot_response, metadata = main.get_answer(question, folder_id)
         return {
@@ -210,6 +211,27 @@ def getanswer(
     else:
         raise HTTPException (
             status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid folder_id"
+        )
+
+@app.get("/authenticate-onedrive")
+async def authen_onedrive(dependencies=Depends(JWTBearer())):
+    try:
+        access_token = onedriveloader.auth_onedrive()
+        return {"message":access_token}
+    except HTTPException:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="authorization failed"
+        )
+
+
+@app.get("/authenticate-googledrive")
+async def authen_googledrive(dependencies=Depends(JWTBearer())):
+    try:
+        access_token = google_drive.auth_googledrive()
+        return {"message": "authentication successful"}
+    except HTTPException:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="authorization failed"
         )
 
 
@@ -234,7 +256,3 @@ def token_required(func):
             return {"msg": "Token blocked"}
 
     return wrapper
-
-
-if __name__ == "__main__":
-    uvicorn.run("my_api:app", host="127.0.0.1", port=8000, reload=True)

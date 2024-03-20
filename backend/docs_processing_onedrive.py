@@ -40,6 +40,10 @@ def split_chunks(doc):
     for chunk in cur_text_chunks:
         chunk_metadata = doc.metadata.copy()
         chunk_metadata["paragraph_number"] = para_no
+        if "created_by_app" not in chunk_metadata:
+            chunk_metadata["drive_type"] = "Google drive"
+        else:
+            chunk_metadata["drive_type"] = "One drive"
         text_chunks.append({"text": chunk, "metadata": chunk_metadata})
         para_no += 1
         print("splitting going on..")
@@ -90,6 +94,7 @@ def get_new_files(docs, folder_id):
         doc_id = doc.metadata["file id"]
         if doc_id not in all_chroma_id:
             new_docs.append(doc)
+            print(doc.metadata["file name"], "found..")
     if new_docs:
         print("new files found...")
     else:
@@ -119,7 +124,7 @@ def process_documents_onedrive(documents, folder_id):
 
     # check new documents
     new_docs = get_new_files(documents, folder_id)
-    if new_docs is None:
+    if new_docs == []:
         return "no_new_file"
     # chunks + nodes
     all_nodes = []

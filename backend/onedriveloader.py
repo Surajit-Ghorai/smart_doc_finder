@@ -169,6 +169,7 @@ class My_OneDriveReader(OneDriveReader):
 
         return folder_ids
 
+
 # authenticate onedrive and get access token
 def auth_onedrive():
     access_token = OneDriveReader(
@@ -176,8 +177,9 @@ def auth_onedrive():
     )._authenticate_with_msal()
     return access_token
 
+
 # loader
-def load_data_using_onedrive_reader(folder_id: str, access_token:str):
+def load_data_using_onedrive_reader(folder_id: str, access_token: str):
     """takes a folder id and returns all documents"""
     loader = My_OneDriveReader(client_id=ONEDRIVE_CLIENT_ID, access_token=access_token)
     try:
@@ -226,7 +228,7 @@ def call_loader(folder_id, access_token):
     print("stage 2...")
     doc = load_data_using_onedrive_reader(folder_id, access_token)
     print(f"data loaded: {folder_id} ...!!!")
-    #print(doc)
+    # print(doc)
     response = docs_processing_onedrive.process_documents_onedrive(doc, folder_id)
     print(response)
 
@@ -240,5 +242,5 @@ def load_onedrive(access_token):
 
 
 # sample usage
-access_token = auth_onedrive()
-load_onedrive(access_token)
+#access_token = auth_onedrive()
+#load_onedrive(access_token)
