@@ -2,31 +2,42 @@ import os
 import uvicorn
 import sys
 import threading
-import multiprocessing
+import schedule
 import time
-import concurrent.futures
-import subprocess
+
 
 backend_dir = os.path.abspath("./backend")
 sys.path.insert(1, backend_dir)
+import google_drive
 
-import track
+# import track
+def load_files_googledrive():
+    google_drive.load_google_drive()
 
 
 def run_api_server():
-    #uvicorn.run("my_api:app", host="127.0.0.1", port=8000, reload=False)
-    subprocess.run(["uvicorn", "my_api:app", "--host", "127.0.0.1", "--port", "8000", "--reload=False"])
+    print("api")
+    uvicorn.run("my_api:app", host="127.0.0.1", port=8000, reload=False)
+    # subprocess.run(["uvicorn", "my_api:app", "--host", "127.0.0.1", "--port", "8000", "--reload=False"])
+    time.sleep(10)
 
 
 def run_new_file_loader():
-    track.check_and_load()
+    # Schedule the check to run every specified interval
+    schedule.every(10).minutes.do(load_files_googledrive)
+
+    # Run the scheduler loop
+    while True:
+        print("...")
+        schedule.run_pending()
+        time.sleep(10)
 
 
 if __name__ == "__main__":
-    
+
     # Create processes for each function
-    process1 = multiprocessing.Process(target=run_api_server)
-    process2 = multiprocessing.Process(target=run_new_file_loader)
+    process1 = threading.Thread(target=run_api_server)
+    process2 = threading.Thread(target=run_new_file_loader)
 
     # Start both processes
     process1.start()
@@ -35,12 +46,3 @@ if __name__ == "__main__":
     # Wait for both processes to finish
     process1.join()
     process2.join()
-    '''
-    with concurrent.futures.ProcessPoolExecutor(max_workers=2) as executor:
-        # Submit both functions for execution
-        future1 = executor.submit(run_api_server)
-        future2 = executor.submit(run_new_file_loader)
-
-        # Wait for both functions to complete
-        concurrent.futures.wait([future1, future2])
-    '''
